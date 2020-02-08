@@ -13,7 +13,8 @@ int main(int argc, char* argv[])
 	FILE* inputFile = fopen("numbers.txt", "r");
 	if(inputFile == NULL)
 	{
-		printf("error opening file");
+		//printf("error opening file");
+		perror("numbers.txt");
 		exit(1);
 	}
 	fseek(inputFile, 0L, SEEK_END);
@@ -23,17 +24,21 @@ int main(int argc, char* argv[])
 	buf = calloc(1, size +1);
 	if(!buf) fclose(inputFile),fputs("memory alloc fails",stderr),exit(1);
 	int parity;
+	int padding;
+
 	if(1 != fread(buf, size, 1 , inputFile))fclose(inputFile),free(buf),fputs("entire read fails",stderr),exit(1);
 	
 		for(i= 0; i <= size+1; i++)
 		{	
 			printf("%c", buf[i]);
+			padding++;
 			if(buf[i] == '1')
 			{
 				parity++;
 			}
 			if(buf[i] == ' ')
 			{
+				//if(padding <9)
 				printf(" ");
 				if(parity % 2 == 0)
 				{
