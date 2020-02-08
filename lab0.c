@@ -10,6 +10,7 @@ int main(int argc, char* argv[])
 	int size;
 	//char buf[10];
 	char* buf;
+	printf("test");
 	FILE* inputFile = fopen("numbers.txt", "r");
 	if(inputFile == NULL)
 	{
