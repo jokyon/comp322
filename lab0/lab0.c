@@ -7,7 +7,7 @@ int main(int argc, char* argv[])
 	int size;
 	//char buf[10];
 	char* buf;
-	FILE* inputFile = fopen("numbers.txt", "r");
+	FILE* inputFile = fopen("lab0/numbers.txt", "r");
 	if(inputFile == NULL)
 	{
 		perror("error opening file");
