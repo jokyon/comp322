@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
 	FILE* inputFile = fopen("numbers.txt", "r");
 	if(inputFile == NULL)
 	{
-		perror("error opening file");
+		printf("error opening file");
 		exit(1);
 	}
 	fseek(inputFile, 0L, SEEK_END);
@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
 				
 				
 		}
-	//test edit
+		
 	
 	fclose(inputFile);
 	free(buf);
