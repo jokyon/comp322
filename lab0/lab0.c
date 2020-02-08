@@ -7,10 +7,10 @@ int main(int argc, char* argv[])
 	int size;
 	//char buf[10];
 	char* buf;
-	FILE* inputFile = fopen("comp322/lab0/numbers.txt", "r");
+	FILE* inputFile = fopen("numbers.txt", "r");
 	if(inputFile == NULL)
 	{
-		printf("error opening file");
+		perror("error opening file");
 		exit(1);
 	}
 	fseek(inputFile, 0L, SEEK_END);
