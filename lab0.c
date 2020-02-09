@@ -1,23 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
-
-
-
+#include <math.h>
 
 int main(int argc, char* argv[])
 {
 	int i;
 	int size;
-	//char buf[10];
 	char* buf;
-	printf("test");
+	
 	FILE* inputFile = fopen("numbers.txt", "r");
 	if(inputFile == NULL)
 	{
-		//printf("error opening file");
-		perror("numbers.txt");
+		perror("error opening file");
 		exit(1);
 	}
+
 	fseek(inputFile, 0L, SEEK_END);
 	size = ftell(inputFile);
 	rewind(inputFile);
@@ -25,22 +22,52 @@ int main(int argc, char* argv[])
 	buf = calloc(1, size +1);
 	if(!buf) fclose(inputFile),fputs("memory alloc fails",stderr),exit(1);
 	int parity;
-	int padding;
-
+	int expCounter = 8;
+	int expVal = 0;
 	if(1 != fread(buf, size, 1 , inputFile))fclose(inputFile),free(buf),fputs("entire read fails",stderr),exit(1);
-	
-		for(i= 0; i <= size+1; i++)
+	int numCount = 0;
+	//printf("test1 %c\n", buf[0]);
+		for(i= 0; i <= size+1; i++) // puts each char into arr index
 		{	
+			
+			
 			printf("%c", buf[i]);
-			padding++;
+			numCount++;
+			
+			expCounter--;
 			if(buf[i] == '1')
 			{
 				parity++;
+				expVal += pow(2, expCounter);  // need to fix leftmost bit exponent
 			}
-			if(buf[i] == ' ')
+			
+			//num += (val - '0') <<(7-i);
+			//printf("test2 %d",num);
+
+			if(buf[i] == ' ') 
 			{
-				//if(padding <9)
-				printf(" ");
+				/*
+				if(numCount < 8) //trying to pad, need to insert into array
+				{
+					for(int pad =0; pad <= 8-numCount; pad++ )
+					{
+						printf("0");
+					}
+					numCount =0;
+				}
+				numCount=0;
+				*/
+				
+				if(expVal > 128) //not sure if works in all cases
+				{
+					expVal = expVal - 128;
+				}
+				
+				printf(" %c ", expVal);
+				printf(" %d ", expVal);
+				expCounter = 8;
+				expVal = 0;
+				
 				if(parity % 2 == 0)
 				{
 					printf("even");
@@ -56,11 +83,11 @@ int main(int argc, char* argv[])
 				
 			}
 
-				
-				
+			//num += (val - '0') <<( 7-1); 
+			//printf("%d", num);		
+					
 		}
 		
-	
 	fclose(inputFile);
 	free(buf);
 }
