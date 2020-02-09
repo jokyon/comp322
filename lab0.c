@@ -26,6 +26,8 @@ int main(int argc, char* argv[])
 	int expVal = 0;
 	if(1 != fread(buf, size, 1 , inputFile))fclose(inputFile),free(buf),fputs("entire read fails",stderr),exit(1);
 	int numCount = 0;
+	printf("Original  As De Pa\n");
+	printf("--------  -- -- --\n");
 	//printf("test1 %c\n", buf[0]);
 		for(i= 0; i <= size+1; i++) // puts each char into arr index
 		{	
