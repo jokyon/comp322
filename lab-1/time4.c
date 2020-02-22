@@ -1,7 +1,9 @@
 #include <stdio.h> 
 #include <sys/types.h> 
 #include <unistd.h> 
+#include <time.h> 
 int main() 
+
 { 
   
     // make two process which run same 
