@@ -4,34 +4,64 @@
 #include <time.h> 
 #include <sys/wait.h>
 #include <sys/times.h>
-		/*
-		struct tms 
-		{
-		    clock_t tms_utime;   //user time 
-		    clock_t tms_stime;  //system time 
-		    clock_t tms_cutime; // user time of children 
-		    clock_t tms_cstime; / system time of children 
-		};
-		*/
+#include <stdlib.h>
+
+/*
+/mnt/c/Users/Joseph/comp322/lab-1	
+*/
 int main() 
 { 	
 	time_t seconds;
-	time(&seconds); 
-	printf("start: %ld\n", seconds); 
+	time(&seconds);
+
+	printf("START: %ld\n", seconds); 
 	
 	clock_t times(struct tms *buf);
 	
 
-	pid_t parent, child;
-    printf("PPID: %d, PID: %d\n",getppid(),getpid());
+	pid_t parent, child, PID, PPID, cPID, cPPID;
+	PID = getpid();
+	PPID = getppid();
+    //
 
+    child = fork();
+    cPID = getpid();
+	cPPID = getppid();
     
-    fork();
-
+    
+    					//this goes up^?/* RETVALUE: %d*/
     struct tms process; 
-  
-     if( waitpid(getpid(),NULL, WUNTRACED) >0)
+     times(&process);  //???
+
+    if(child==0)
     {
+    	printf("PPID: %d PID: %d CPID: %d RETVALUE: %d\n", PID,PPID,cPID, child);
+    	//printf("child stuff\n");
+    	exit(0);
+    }
+    else if(child == -1)
+    {
+    	printf("forking error\n");
+    	exit(0);
+    }
+    else
+    {
+    	if(waitpid(child,NULL, 0) == child)
+    	{
+    		printf("PPID: %d PID: %d\n",PPID,PID);
+    		//printf("child interupt\n");
+    		//exit(0);
+    	}
+    	else
+    	{
+    		printf("nah\n");
+    	}
+    }
+  
+    /* 
+    if( waitpid(getpid(),NULL, WUNTRACED) >0)
+    {
+
     	printf("child stuff\n" );
     }
     else if(waitpid(getpid(),NULL, WUNTRACED) == 0 )
@@ -42,18 +72,19 @@ int main()
     {
     	printf("error\n");
     }
+	*/
 
 
-
-
-    printf("user: %ld, sys: %ld\ncuser: %ld, csys: %ld\n", 
+   	
+    printf("USER: %ld SYS: %ld\nCUSER: %ld CSYS: %ld\n", 
     	process.tms_utime, process.tms_stime, process.tms_cutime, process.tms_cstime);
     
+
+    //times(&process);
 
     //printf("PPID: %d, PID: %d\n",getppid(),getpid());
     //printf("\n");   
   	
-  	time(&seconds); 
-  	printf("stop %ld\n",seconds);
+  	printf("END: %ld\n",seconds);
     return 0; 
 } 
