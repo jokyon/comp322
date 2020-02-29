@@ -7,101 +7,81 @@
 #include <stdlib.h>
 
 /*
-cd /mnt/c/Users/Joseph/comp322/lab-1	
+cd /mnt/c/Users/Joseph/comp322/lab-1    
 */
 
-/*
+pid_t parent, child, PID, PPID, cPID, cPPID;
+
 void processPrint(int prc)
 {
-	if(child==0)
+    if(prc==0)
     {
-    	printf("PPID: %d PID: %d CPID: %d RETVALUE: %d\n", PID,PPID,cPID, child);
-    	//printf("child stuff\n");
-    	exit(0);
+    	cPID = getpid();
+    	cPPID = getppid();
+        printf("PPID: %d PID: %d\n",cPPID ,cPID);
+        //printf("child stuff\n");
+        exit(0);
     }
-    else if(child == -1)
+    
+    else if(prc >0)
     {
-    	printf("forking error\n");
-    	exit(0);
+    	prc = waitpid(prc,NULL, WUNTRACED);
+        if( prc == parent)
+        {
+        	PID = getpid();
+        	PPID = getppid();
+            printf("PPID: %d PID: %d CPID: %d RETVALUE: %d\n",PPID, PID, prc, cPID); // prc and pPID names need testing
+            //printf("child interupt\n");
+            //exit(0);
+        }
+        
     }
-    else
+    else if(prc == -1)
     {
-    	if(waitpid(child,NULL, 0) == child)
-    	{
-    		printf("PPID: %d PID: %d\n",PPID,PID);
-    		//printf("child interupt\n");
-    		//exit(0);
-    	}
-    	else
-    	{
-    		printf("nah\n");
-    	}
+        printf("forking error\n");
+        exit(0);
     }
 }
-*/
+
+
 
 
 int main() 
-{ 	
-	time_t seconds;
-	time(&seconds);
+{   
+    time_t seconds;
+    time(&seconds);
 
-	printf("START: %ld\n", seconds); 
-	
-	clock_t times(struct tms *buf);
-	
-
-	pid_t parent, child, PID, PPID, cPID, cPPID;
-	PID = getpid();
-	PPID = getppid();
-    //
-
-    child = fork(); 
-    cPID = getpid();
-	cPPID = getppid();
-    
-    
-    					//this goes up^?/* RETVALUE: %d*/
-    struct tms process; 
-     times(&process);  //???
-     //printf("child is: %d\n", child);
-
-    if(child==0)
-    {
-    	printf("PPID: %d PID: %d CPID: %d RETVALUE: %d\n", PID,PPID,cPID, child);
-    	//printf("child stuff\n");
-    	exit(0);
-    }
-    else if(child == -1)
-    {
-    	printf("forking error\n");
-    	exit(0);
-    }
-    
-    else
-    {
-    	if(waitpid(child,NULL, WUNTRACED) == child) //WUNTRACED here?
-    	{
-    		printf("PPID: %d PID: %d\n",PPID,PID);
-    		//printf("child interupt\n");
-    		//exit(0);
-    	}
-    	else
-    	{
-    		printf("nah\n");
-    	}
-    }
+    printf("START: %ld\n", seconds); 
         
 
-    printf("USER: %ld SYS: %ld\nCUSER: %ld CSYS: %ld\n", 
-    	process.tms_utime, process.tms_stime, process.tms_cutime, process.tms_cstime);
+    //pid_t parent, child, PID, PPID, cPID, cPPID;
+    //PID = getpid();
+    //PPID = getppid();
     
 
-    //times(&process);
+    parent = fork();
+    child = parent;
+    
+    //cPID = getpid();
+    //cPPID = getppid();
+    
+    
+                        
+    struct tms process; 
+    times(&process);  
+     
+    
+    processPrint(parent);
+    processPrint(child);
+    
 
-    //printf("PPID: %d, PID: %d\n",getppid(),getpid());
-    //printf("\n");   
-  	
-  	printf("END: %ld\n",seconds);
+    printf("USER: %ld SYS: %ld\nCUSER: %ld CSYS: %ld\n", 
+        process.tms_utime, process.tms_stime, process.tms_cutime, process.tms_cstime);
+    
+
+    
+
+    time(&seconds);
+    printf("END: %ld\n",seconds);
     return 0; 
 } 
