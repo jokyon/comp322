@@ -30,7 +30,7 @@ void processPrint(int prc)
         {
         	PID = getpid();
         	PPID = getppid();
-            printf("PPID: %d PID: %d CPID: %d RETVALUE: %d\n",PPID, PID, prc, cPID); // prc and pPID names need testing
+            printf("PPID: %d PID: %d CPID: %d RETVALUE: %d\n",PPID, PID, prc, cPID); // prc and pPID names need testing or renaming 
             //printf("child interupt\n");
             //exit(0);
         }
@@ -64,8 +64,7 @@ int main()
     
     //cPID = getpid();
     //cPPID = getppid();
-    
-    
+        
                         
     struct tms process; 
     times(&process);  
@@ -77,9 +76,7 @@ int main()
 
     printf("USER: %ld SYS: %ld\nCUSER: %ld CSYS: %ld\n", 
         process.tms_utime, process.tms_stime, process.tms_cutime, process.tms_cstime);
-    
-
-    
+        
 
     time(&seconds);
     printf("END: %ld\n",seconds);
