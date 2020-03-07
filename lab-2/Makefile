@@ -1,3 +1,3 @@
 all: launch.c tube.c
-	gcc -o launch launch.c-I
-	gcc -o tube tube.c -I
+	gcc -o launch launch.c 
+	gcc -o tube tube.c 
