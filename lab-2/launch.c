@@ -5,7 +5,6 @@
 #include <sys/wait.h>
 #include <stdlib.h>
 
-
 //	cd /mnt/c/Users/Joseph/comp322/lab-2  
 
 pid_t parent, child, PID, PPID, cPID;
@@ -28,8 +27,9 @@ void processPrint(int prc)
         {
         	//PID = getpid();
         	//PPID = getppid();
-            printf("CPID: %d\n", prc); 
-            fprintf(stderr, "= %d\n", cPID); //this is wrong
+            printf("CPID = %d\n", prc); 
+            fprintf(stderr, "= %d\n", cPID); //
+            //execve(args[1], args, NULL);
             //printf("child interupt\n");
             //exit(0);
         }
@@ -45,26 +45,28 @@ void processPrint(int prc)
 
 
 int main(int argc, char *argv[])
-{
+{	
 	char* newArgv[argc];
-	for (int i =1; i<argc -1; i++)
+	//printf("%d\n", argc);
+	for (int i =0; i<=argc  ; i++)
 	{
-		int j =0;
+		//int j =0;
 		newArgv[i] = argv[i];
-		printf("%s", newArgv[i]);
+		//printf("%s ", newArgv[i]);
 	}
-	printf("\n");
+	//printf("\n");
 	
-  	char* newEnvp[] = {NULL};
 		parent = fork();
     	child = parent;
-
 		processPrint(parent);
     	processPrint(child);
-
+	
 	//newArgv[0] = argv[1];
-	execve(argv[1], newArgv, newEnvp);
-  	perror("Could not execve");
-  	exit(EXIT_FAILURE);
+	//execve(argv[1], newArgv, newEnvp);
+    	//printf("%d\n", argv[1][0] );
+    	execve(newArgv[1], newArgv, NULL);
+  		perror("Could not execve");
+  		exit(EXIT_FAILURE);
+
 
 }
