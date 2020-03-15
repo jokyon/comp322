@@ -8,56 +8,78 @@
 
 // cd /mnt/c/Users/Joseph/comp322/lab-2 
 
-int main(int argc, char *argv[])
+pid_t parent, child1, child2, cPID;
+
+void processPrint(int prc, pid_t printChild)
 {
-	pid_t child1, child2, parent;
-	//child1 = fork();
-	//child2 = fork();
-	char buf;
-
-	int pipeC1[2];
-	int pipeC2[2];
-
-	if (argc != 2) 
-	{
-        fprintf(stderr, "Usage: %s <string>\n", argv[0]);
-        exit(EXIT_FAILURE);
-    }
-
-    if (pipe(pipeC1) == -1) 
+    if(prc==0)
     {
-        perror("pipe");
-        exit(EXIT_FAILURE);
+    	cPID = getpid();
+    	//printf("PPID: %d PID: %d\n",cPPID ,cPID);
+        //printf("child stuff\n");
+        exit(0);
     }
-
-   	child1 = fork();
-    if (child1 == -1) 
+    
+    else if(prc >0)
     {
-	    perror("fork");
-	    exit(EXIT_FAILURE);           
-    }                         
-
-	if (child1 == 0) 
-	{    /* Child reads from pipe */
-        close(pipeC1[1]);          /* Close unused write end */
-
-        while (read(pipeC1[0], &buf, 1) > 0)
-                   write(STDOUT_FILENO, &buf, 1);
-
-               write(STDOUT_FILENO, "\n", 1);
-               close(pipeC1[0]);
-               _exit(EXIT_SUCCESS);
+    	prc = waitpid(prc,NULL, WUNTRACED);
+        if( prc == printChild)
+        {
+        	printf("CPID = %d\n", prc); // prc and pPID names need testing or renaming 
+            fprintf(stderr, "= %d\n", cPID);
+            //printf("child interupt\n");
+            //exit(0);
+        }
     }
-
-    else 
-    {            /* Parent writes argv[1] to pipe */
-    	close(pipeC1[0]);          /* Close unused read end */
-    	write(pipeC1[1], argv[1], strlen(argv[1]));
-    	close(pipeC1[1]);          /* Reader will see EOF */
-    	wait(NULL);                /* Wait for child */
-    	exit(EXIT_SUCCESS);
+    else if(prc == -1)
+    {
+        printf("forking error\n");
+        exit(0);
     }
-
-
-
 }
+
+
+
+
+int main(int argc, char *argv[]) 
+{   
+	char buf;
+    int pipeC1[2];
+    int pipeC2[2];
+
+
+    child1 = fork();
+    parent = child1;    
+    processPrint(child1, parent);
+
+    close(pipeC1[1]);
+    while (read(pipeC1[0], &buf, 1) > 0)
+    {
+        write(STDOUT_FILENO, &buf, 1);
+    }
+    
+    write(STDOUT_FILENO, "\n", 1);
+    close(pipeC1[0]);
+    //_exit(EXIT_SUCCESS);
+        
+    //dup2(argv[1],2);
+
+    child2 = fork();
+    parent =child2;
+        
+    processPrint(child2, parent);
+    while (read(pipeC1[0], &buf, 1) > 0)
+    {
+        write(STDOUT_FILENO, &buf, 1);
+    }
+    
+    write(STDOUT_FILENO, "\n", 1);
+    close(pipeC1[0]);
+        
+   
+   //parent = child1;
+       _exit(EXIT_SUCCESS); 
+   return 0; 
+}
+
+
