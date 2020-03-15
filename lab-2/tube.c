@@ -68,15 +68,18 @@ int main(int argc, char *argv[])
     parent =child2;
         
     processPrint(child2, parent);
-    while (read(pipeC1[0], &buf, 1) > 0)
+    close(pipeC2[2]);
+    while (read(pipeC2[0], &buf, 1) > 0)
     {
         write(STDOUT_FILENO, &buf, 1);
     }
     
     write(STDOUT_FILENO, "\n", 1);
-    close(pipeC1[0]);
+    close(pipeC2[0]);
         
-   
+   		//execve(argv[1], argv, NULL);
+  		//perror("Could not execve");
+  		//exit(EXIT_FAILURE);
    //parent = child1;
        _exit(EXIT_SUCCESS); 
    return 0; 
