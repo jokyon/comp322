@@ -5,10 +5,15 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <string.h>
+#include <time.h> 
 
 //	cd /mnt/c/Users/Joseph/comp322/lab-3  
 pid_t PID;
+int counter = 0;
+ time_t seconds;
 
+      
+    
 void handler(int sig) 
 { 
 	//pid_t PID = getpid();
@@ -18,12 +23,17 @@ void handler(int sig)
     {
        //printf("Received SIGUSR1!\n");
     	write(STDOUT_FILENO, "Received SIGTERM\n", 17);
+    	//printf("%ld\n",seconds );
+    	counter++;
     }
 
 	if (sig == SIGUSR1)
     {
        //printf("Received SIGUSR1!\n");
     	write(STDOUT_FILENO, "Received SIGUSR1\n", 17);
+    	//
+    	counter++;
+
     }
 
 
@@ -31,14 +41,24 @@ void handler(int sig)
     {
        //printf("Received SIGUSR1!\n");
     	write(STDOUT_FILENO, "Received SIGUSR2\n", 17);
+    	//printf("%ld\n",seconds );
+    	counter++;
     }
+
+
     //exit(EXIT_SUCCESS);
 } 
   
-
+void seghandler(int sig)
+{
+	write(STDOUT_FILENO, "Seg fault\n", 10);
+	counter++;
+	exit(EXIT_SUCCESS); //without exit cotinuously loops
+}
 
 int main(int argc, char *argv[])
 {
+	 time(&seconds);
 	char* TERM = "TERM";
 	char* USR1 = "USR1";
 	char* USR2 = "USR2";
@@ -66,11 +86,14 @@ int main(int argc, char *argv[])
 			signal(SIGUSR2, handler);
 			raise(SIGUSR2);
 			pause();
+
 			//kill(getpid(), SIGUSR2);
 		}
+		//if(argv[argc-1])
+		//signal(SIGSEGV, seghandler); // if outside for loop, segfault
 
 	}
-
+	
 	//execve(argv[1], argv, NULL);
 	//signal(SIGINT, handler);
 	//pause();
@@ -81,6 +104,8 @@ int main(int argc, char *argv[])
     //while (1) 
     //{ 
         printf("cycle: %d\n", PID); 
+        printf("signals caught: %d\n", counter);
+        
         //sleep(1); 
     //} 
     return 0; 
