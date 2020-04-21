@@ -102,10 +102,10 @@ void* philospher(void* num)
     	int* i = num; 
         sleep(1); 
         eat(*i);
-        	//usleep(rand()/2);  
+        	usleep(rand()/2);  
         sleep(0); 
         think(*i);
-        	//usleep(rand()/2); 
+        	usleep(rand()/2); 
     } 
 } 
   
