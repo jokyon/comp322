@@ -6,15 +6,17 @@
 
 #define PAGESIZE 4096
 
+// cd /mnt/c/Users/Joseph/comp322/lab-5 
+
 int main(int argc, char* argv[])
 {
 	unsigned int address;
 	unsigned int pgNum;
 	unsigned int offset;
 
-	if(argcc <2)
+	if(argc <2)
 	{
-		printf("enter address: \n", );
+		printf("Please enter an address\n");
 		return - 1;
 	}
 
