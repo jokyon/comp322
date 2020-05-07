@@ -115,7 +115,7 @@ void* philospher(void* num)
   
 int main(int argc, char *argv[]) 
 { 
-	 srand(time(0));
+	srand(time(0));
   	pid_t PID = getpid();
   	printf("%d\n",PID);
 
