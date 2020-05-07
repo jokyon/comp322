@@ -4,46 +4,107 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <string.h>
-
+#include <fcntl.h>
+#include <time.h>
+   
 // cd /mnt/c/Users/Joseph/comp322/lab-6 
 
+//execve(argv[0], argv, NULL);
+    	
+pid_t daePID, mole1, mole2;
+//pid_t mole1 = 0;
+//pid_t mole2 = 0;
+/*
 void sigHandler(int sig)
 {
-	//if (sig == SIGTERM)
-   //{
-     	sem_destroy(&mutex);
-		printf("Philosopher completed %d cycles\n", cycle_count);
+	srand(time(0));
+	int randNum = (rand() % (2 - 1 + 1)) + 1;
+	if (sig == SIGTERM)
+   {
+     	kill(mole1);
+     	kill(mole2);
+		printf("Caught SigTerm");
 		exit(0);
-    //}
-}
+    }
 
+	
+    if (signum == SIGUSR1)
+    {
+    	kill(mole1);
+    	if(randNum ==1)
+    	{
+    		mole2 = fork();
+    		//execve(argv[0], argv, NULL);
+    	}
+    	else
+    	{
+    		mole1 = fork();
+    		//execve(argv[0], argv, NULL);
+    	}
+    	execve(argv[0], argv, NULL);
+        printf("Received SIGUSR1\n");
+    }
+
+	if (signum == SIGUSR2)
+    {
+    	
+    	if (mole2 <= 0)
+    	{
+    		mole2 = fork(); 
+    	}
+    	if(randNum ==1)
+    	{
+    		mole2 = fork();
+
+    	}
+    	else
+    	{
+    		mole1 = fork();    		
+    	}
+    	execve(argv[0], argv, NULL);
+        printf("Received SIGUSR2\n");
+    }
+
+
+}
+*/
 
 int main(int argc, char* argv[])
 {
+	daePID = getpid();
 	FILE *fp= NULL;
-	pid_t process_id = 0;
+	//pid_t mole1 = 0;
 	pid_t sid = 0;
+	char *newargv[] ={0};
+	newargv[0]= argv[1];
 
-	pid = fork();
+	/*
+	signal(SIGTERM, sigHandler);
+	signal(SIGUSR1, sigHandler);
+	signal(SIGUSR2, sigHandler);
+	*/
 
-	if (pid < 0)
+	mole1 = fork();	
+	if (mole1 < 0)
 	{
 		printf("fork failed\n");
 		exit(1);
 	}
 	
-	if (pid > 0)
+	if (mole1 > 0)// kill parent
 	{
-		printf("child's pid: %d\n", pid);
+		printf("mole's pid: %d\n", mole1);
 		exit(0);
 	}
-	
+	execve(argv[1], newargv, NULL);
+   	perror("execve"); //
+	exit(EXIT_FAILURE);
 	umask(0);
 	
 	sid = setsid(); //set new session
 	if(sid < 0)
 	{
-		// Return failure
+		// Return fail
 		exit(1);
 	}
 	// Change the current working directory to root.
@@ -57,15 +118,24 @@ int main(int argc, char* argv[])
 	int devNull = open("/dev/null", O_WRONLY);
 	int copy_desc = dup(devNull); 
 
-	fp = fopen ("Log.txt", "w+");
+	fp = fopen ("lab6.log", "a+");
+
+	if(fp == NULL)
+	{
+		printf("log fail\n");
+	}
+
+	fprintf(fp, "Pop %s\n", argv[0]); //
+
 	while (1)
 	{
 		//Dont block context switches, let the process sleep for some time
 		sleep(1);
 		fprintf(fp, "Logging info...\n");
 		fflush(fp);
+		break;
 		// Implement and call some function that does core work for this daemon.
-		}
+	}
 	fclose(fp);
 	return (0);
 }
