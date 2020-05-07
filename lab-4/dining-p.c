@@ -9,6 +9,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <pthread.h> 
+#include <time.h>
 
 #define TEMP 5
 #define THINKING 2
@@ -20,13 +21,16 @@
 
 //	cd /mnt/c/Users/Joseph/comp322/lab-4  
 
+
+
 int state[TEMP]; 
 int phil[TEMP] = { 0, 1, 2, 3, 4 }; 
   
 sem_t mutex; 
 sem_t seats[TEMP]; 
-  
-int cycle_count =0;  
+
+ 
+int cycleCount =0;  
 void pickup(int pNum) 
 { 
     if (state[pNum] == HUNGRY && state[LEFT] != EATING && state[RIGHT] != EATING) 
@@ -89,7 +93,7 @@ void sigHandler(int sig)
 	//if (sig == SIGTERM)
    //{
      	sem_destroy(&mutex);
-		printf("Philosopher completed %d cycles\n", cycle_count);
+		printf("Philosopher completed %d cycles\n", cycleCount);
 		exit(0);
     //}
 }
@@ -98,7 +102,7 @@ void* philospher(void* num)
 { 
   	
     while (1)
-    { 	cycle_count++; 
+    { 	cycleCount++; 
     	int* i = num; 
         sleep(1); 
         eat(*i);
@@ -111,6 +115,7 @@ void* philospher(void* num)
   
 int main(int argc, char *argv[]) 
 { 
+	 srand(time(0));
   	pid_t PID = getpid();
   	printf("%d\n",PID);
 
@@ -137,7 +142,5 @@ int main(int argc, char *argv[])
   	{
     	pthread_join(thread_id[i], NULL); 
   	}
-
-  	
-  	
+  	 	
 } 
