@@ -12,6 +12,7 @@
 //execve(argv[0], argv, NULL);
     	
 pid_t daePID, mole1, mole2;
+char *newargv[] ={0};
 //pid_t mole1 = 0;
 //pid_t mole2 = 0;
 /*
@@ -71,12 +72,14 @@ void sigHandler(int sig)
 
 int main(int argc, char* argv[])
 {
-	daePID = getpid();
+	//daePID = getpid();
 	FILE *fp= NULL;
 	//pid_t mole1 = 0;
 	pid_t sid = 0;
-	char *newargv[] ={0};
+	
 	newargv[0]= argv[1];
+	srand(time(0));
+	int randNum = (rand() % (2 - 1 + 1)) + 1;
 
 	/*
 	signal(SIGTERM, sigHandler);
