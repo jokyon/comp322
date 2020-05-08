@@ -6,49 +6,52 @@
 #include <string.h>
 #include <fcntl.h>
 #include <time.h>
+#include <syslog.h>
+#include <sys/resource.h>
+#include <signal.h>
    
 // cd /mnt/c/Users/Joseph/comp322/lab-6 
 
-//execve(argv[0], argv, NULL);
-    	
+
 pid_t daePID, mole1, mole2;
 char *newargv[] ={0};
-//pid_t mole1 = 0;
-//pid_t mole2 = 0;
-/*
+ char *newenviron[] = { NULL };
+pid_t mole1 = 0;
+pid_t mole2 = 0;
+
 void sigHandler(int sig)
 {
 	srand(time(0));
 	int randNum = (rand() % (2 - 1 + 1)) + 1;
 	if (sig == SIGTERM)
-   {
-     	kill(mole1);
-     	kill(mole2);
+   	{
+     	kill(mole1,SIGKILL);
+     	kill(mole2,SIGKILL);
 		printf("Caught SigTerm");
 		exit(0);
     }
 
 	
-    if (signum == SIGUSR1)
+    if (sig == SIGUSR1)
     {
-    	kill(mole1);
+    	kill(mole1,SIGKILL);
     	if(randNum ==1)
     	{
     		mole2 = fork();
-    		//execve(argv[0], argv, NULL);
+    		execve(newargv[0], newargv, newenviron);
     	}
     	else
     	{
     		mole1 = fork();
     		//execve(argv[0], argv, NULL);
     	}
-    	execve(argv[0], argv, NULL);
+    	execve(newargv[0], newargv, newenviron);
         printf("Received SIGUSR1\n");
     }
 
-	if (signum == SIGUSR2)
+	if (sig == SIGUSR2)
     {
-    	
+    	kill(mole2,SIGKILL);
     	if (mole2 <= 0)
     	{
     		mole2 = fork(); 
@@ -62,30 +65,39 @@ void sigHandler(int sig)
     	{
     		mole1 = fork();    		
     	}
-    	execve(argv[0], argv, NULL);
+    	execve(newargv[0], newargv, newenviron);
         printf("Received SIGUSR2\n");
     }
 
 
 }
-*/
+
 
 int main(int argc, char* argv[])
 {
 	//daePID = getpid();
 	FILE *fp= NULL;
 	//pid_t mole1 = 0;
-	pid_t sid = 0;
+	pid_t sid;
+	int i, fd0, fd1, fd2;
 	
+		char * word = strtok (argv[1], " ");
+	    char path[128] = "/bin/";
+	    strcat (path, word);
+
+
+	            
+ 
 	newargv[0]= argv[1];
+	printf ("[%s]\n", path);
 	srand(time(0));
 	int randNum = (rand() % (2 - 1 + 1)) + 1;
 
-	/*
+	
 	signal(SIGTERM, sigHandler);
 	signal(SIGUSR1, sigHandler);
 	signal(SIGUSR2, sigHandler);
-	*/
+	
 
 	mole1 = fork();	
 	if (mole1 < 0)
@@ -99,12 +111,16 @@ int main(int argc, char* argv[])
 		printf("mole's pid: %d\n", mole1);
 		exit(0);
 	}
-	execve(argv[1], newargv, NULL);
-   	perror("execve"); //
-	exit(EXIT_FAILURE);
+	//printf("test1\n");
+		
+		execve(argv[1], newargv,newenviron);
+   	//perror("execve"); //
+	//exit(EXIT_FAILURE);
+	
 	umask(0);
 	
 	sid = setsid(); //set new session
+	
 	if(sid < 0)
 	{
 		// Return fail
@@ -112,7 +128,9 @@ int main(int argc, char* argv[])
 	}
 	// Change the current working directory to root.
 	chdir("/");
+	//err_quit("%s: can’t change directory to /", cmd);
 	// Close stdin. stdout and stderr
+	
 	close(STDIN_FILENO);
 	close(STDOUT_FILENO);
 	close(STDERR_FILENO);
@@ -120,7 +138,7 @@ int main(int argc, char* argv[])
 
 	int devNull = open("/dev/null", O_WRONLY);
 	int copy_desc = dup(devNull); 
-
+	/*
 	fp = fopen ("lab6.log", "a+");
 
 	if(fp == NULL)
@@ -129,7 +147,8 @@ int main(int argc, char* argv[])
 	}
 
 	fprintf(fp, "Pop %s\n", argv[0]); //
-
+	*/
+	
 	while (1)
 	{
 		//Dont block context switches, let the process sleep for some time
@@ -139,6 +158,7 @@ int main(int argc, char* argv[])
 		break;
 		// Implement and call some function that does core work for this daemon.
 	}
+	
 	fclose(fp);
 	return (0);
 }
