@@ -24,8 +24,8 @@ int main(int argc, char* argv[])
 	pgNum = address / PAGESIZE;
 	offset = address % PAGESIZE;
 
-	printf("The address: %u\n", address);
-	printf("Page number: %u\n", pgNum);
-	printf("Offset: %u\n", offset);
+	printf("The address: %u\nPage number: %u\nOffset: %u\n", address, pgNum, offset);
+	//printf("Page number: %u\n", pgNum);
+	//printf("Offset: %u\n", offset);
 	
 }
