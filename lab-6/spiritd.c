@@ -78,7 +78,7 @@ int main(int argc, char* argv[])
 	//daePID = getpid();
 	FILE *fp= NULL;
 	//pid_t mole1 = 0;
-	pid_t sid;
+	pid_t sid = 0;
 	int i, fd0, fd1, fd2;
 	
 		char * word = strtok (argv[1], " ");
@@ -91,7 +91,7 @@ int main(int argc, char* argv[])
 	newargv[0]= argv[1];
 	printf ("[%s]\n", path);
 	srand(time(0));
-	int randNum = (rand() % (2 - 1 + 1)) + 1;
+	
 
 	
 	signal(SIGTERM, sigHandler);
@@ -111,16 +111,13 @@ int main(int argc, char* argv[])
 		printf("mole's pid: %d\n", mole1);
 		exit(0);
 	}
-	//printf("test1\n");
 		
-		execve(argv[1], newargv,newenviron);
+		execve(argv[1], newargv,newenviron); //stuck here
    	//perror("execve"); //
 	//exit(EXIT_FAILURE);
-	
 	umask(0);
 	
 	sid = setsid(); //set new session
-	
 	if(sid < 0)
 	{
 		// Return fail
@@ -130,7 +127,6 @@ int main(int argc, char* argv[])
 	chdir("/");
 	//err_quit("%s: can’t change directory to /", cmd);
 	// Close stdin. stdout and stderr
-	
 	close(STDIN_FILENO);
 	close(STDOUT_FILENO);
 	close(STDERR_FILENO);
