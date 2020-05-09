@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
 	{
 		printf("log fail\n");
 	}
-	fprintf(fp, "TEST Pop %s\n", argv[0]); //
+	fprintf(fp, "Pop %s\n", argv[0]); //
 
     //for (j = 0; j < argc; j++)
     
