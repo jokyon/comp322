@@ -27,26 +27,29 @@ void sigHandler(int sig)
    	{
      	kill(mole1,SIGKILL);
      	kill(mole2,SIGKILL);
-		printf("Caught SigTerm");
+		printf("Killing all moles");
 		exit(0);
     }
 
-	
+	pid_t newMole = 0;	
     if (sig == SIGUSR1)
     {
+
     	kill(mole1,SIGKILL);
     	if(randNum ==1)
     	{
     		mole2 = fork();
+    		newMole = mole2;
     		execve(newargv[0], newargv, newenviron);
     	}
     	else
     	{
     		mole1 = fork();
-    		//execve(argv[0], argv, NULL);
+    		newMole = mole1;
+    		execve(newargv[0], newargv, newenviron);
     	}
     	execve(newargv[0], newargv, newenviron);
-        printf("Received SIGUSR1\n");
+        printf("mole %d made \n", newMole);
     }
 
 	if (sig == SIGUSR2)
@@ -69,13 +72,18 @@ void sigHandler(int sig)
         printf("Received SIGUSR2\n");
     }
 
-
 }
 
 
 int main(int argc, char* argv[])
 {
 	//daePID = getpid();
+	
+	if(argc <2)
+	{
+		printf("needs moles\n");
+		return - 1;
+	}
 	FILE *fp= NULL;
 	//pid_t mole1 = 0;
 	pid_t sid = 0;
@@ -84,21 +92,19 @@ int main(int argc, char* argv[])
 		char * word = strtok (argv[1], " ");
 	    char path[128] = "/bin/";
 	    strcat (path, word);
-
-
-	            
+           
  
 	newargv[0]= argv[1];
 	printf ("[%s]\n", path);
 	srand(time(0));
+		
 	
 
-	
+
 	signal(SIGTERM, sigHandler);
 	signal(SIGUSR1, sigHandler);
 	signal(SIGUSR2, sigHandler);
 	
-
 	mole1 = fork();	
 	if (mole1 < 0)
 	{
@@ -143,18 +149,8 @@ int main(int argc, char* argv[])
 	}
 
 	fprintf(fp, "Pop %s\n", argv[0]); //
-	*/
-	
-	while (1)
-	{
-		//Dont block context switches, let the process sleep for some time
-		sleep(1);
-		fprintf(fp, "Logging info...\n");
-		fflush(fp);
-		break;
-		// Implement and call some function that does core work for this daemon.
-	}
-	
+	*/	
+		
 	fclose(fp);
 	return (0);
 }
