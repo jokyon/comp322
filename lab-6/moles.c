@@ -27,6 +27,6 @@ int main(int argc, char *argv[])
 
     //for (j = 0; j < argc; j++)
     
-	printf("went to mole\n");
+	printf("went to moles\n");
     exit(EXIT_SUCCESS);
 }
