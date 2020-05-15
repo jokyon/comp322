@@ -4,15 +4,32 @@
 #include <signal.h>
 #include <sys/types.h>
 #include <time.h>
+#include <aio.h>
+#include <math.h>
+#include <errno.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <syslog.h>
+#include <sys/resource.h>
 
-int blocks, size, scalar;
+// cd /mnt/c/Users/Joseph/comp322/lab-7 
+
+  	//int last, current, next;
+int block_s, size, scalar;
+//int block;
+
+typedef struct aiocb aiocb_t;
+   aiocb_t  last, current, next;
 
 
-int matrix_add(int blk,int sz,int sclr)
+   //aiocb_t  *my_aio_list[1] = {&my_aio};
+
+void matrix_add(int blk[size][size] ,int sz,int sclr)
 {
-	for (i = 1; i <= sz; i++)
+	//int matrix[sz][sz];
+	for (int i = 1; i <= sz; i++)
 	{
-		for (j = 1; <= sz; j++) 
+		for (int j = 1; j <= sz; j++) 
             {
                blk[i][j] += sclr;
             }     
@@ -22,29 +39,50 @@ int matrix_add(int blk,int sz,int sclr)
 
 int main(int argc, char* argv[])
 {	
-	block = atoi(argv[1]);
-	FILE *fp= NULL;
-	fp = fopen ("lab7.txt", "a+");
-	fprintf(fp, "%s\n", argv[0]);
-
-	time_t curtime;
+	
+	time_t curtime,endtime;
 	struct tm * timeinfo;
+	time (&curtime);
+  	timeinfo = localtime (&curtime);
+  	printf ( "Start time: %s", asctime (timeinfo));
+  		
+  	size =atoi(argv[1]);
+	block_s = atoi(argv[2]);
+	int block[size][size];
 
-  	time ( &rcurtime );
-  	timeinfo = localtime ( &curtime );
-  	printf ( "Current time: %s", asctime (timeinfo));
+	off_t offset;
 
 
-
-  	for(int x =1; x <= blocks; x++)
-  	{
-  		for(int y = 1; y <= blocks; y++)
-  		{
-  			
-  		}
-  	}
-
+	aio_read(&current);
+	aio_return(&current);
+	/*
+	for(current = 0; block_size )
+	last = current -1;
+	next - current +1 ;	
+	*/
+	//aio_int(&last, )
+	/*
+	int ret = aio_read(&my_aio);
+    if (ret < 0)
+        perror("aio_read");
+	*/
 	srand(time(0));
-	size = (rand() % (2 - 1 + 1)) + 1;
-	int block_size = size /block;
+	scalar = rand();
+	int block_size = size /block_s;
+	//int q,w;
+	//int mtx[q][w];
+
+  	matrix_add(block, block_size,scalar);
+  	
+  	aio_write(&last);
+  	aio_return(&last);
+  		
+	
+  	
+  	  	
+
+  	//sleep(1);
+  	time (&endtime);
+  	timeinfo = localtime (&endtime);
+	printf ( "End time: %s", asctime (timeinfo));
 }
